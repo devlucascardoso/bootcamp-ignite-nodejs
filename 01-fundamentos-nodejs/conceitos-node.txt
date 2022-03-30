@@ -1,0 +1,27 @@
+->O que é NodeJS?
+Plataforma open-source permite execução da linguagem javascript do lado do servidor 
+"ambiente de execução JavaScript"
+
+->Quais problemas NodeJS veio resolver?
+Node foi desenvolvido em 2011, e na época as tecnologias não davam bom suporte ao processo de I/O (Input/Output = entrada/saída)
+
+->Características do NodeJS
+>Event Loop
+  Call Stack
+  V8
+
+>Single - Thread
+
+>Non-blocking I/O
+
+>Módulos nativos
+  http
+  dns
+  fs
+  buffer
+  stream
+  ...
+
+->Gerenciadores de pacotes
+NPM: vem instalado de forma padrão com o Node
+YARN: é uma alternativa de gerenciador de pacotes, as vantagens é de ter um arquivo lock.json simples e otimizado

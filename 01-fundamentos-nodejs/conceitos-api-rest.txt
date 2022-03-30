@@ -1,0 +1,39 @@
+->O que é API?
+Application Programming Interface
+(Interface de Programação de Aplicativos)
+
+Conjunto de especificações de possíveis interações entre aplicações
+
+Documentação para desenvolvedor
+
+->O que é REST?
+Representation State Transfer 
+(Transferência Representacional de Estado)
+
+Modelo de arquitetura
+
+->Regras REST
+Client-Server: Separar as responsabilidades do Cliente | Servidor
+
+Stateless: Cada requisição como uma transação independente que não está relacionada a qualquer requisição anterior
+(Protocolo sem estado)
+
+Cache: A aplicação tem que ser construída com a possibilidade do cache ser implementado
+
+Interface Uniforme:
+  Identificação dos recursos: http://servidor.com.br/clientes
+  Representação dos recursos: pode retornar um response JSON|XML|HTML
+  Mensagens auto-descritivas: "user does not exist"
+  HATEOAS: A resposta contém esses possíveis links de acompanhamento
+  (Hypertext As The Engine Of Application State) (Hipertexto como o estado do motor de aplicação)
+  EXEMPLO:{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "usd",
+            "value": 100.00
+      }
+    }
+  }
+  Camadas: Permitir que existam camadas(funcionalidades) entre o Client | Server
+  Código Sob Demanda: Permite que as funcionalidades do cliente interajam scripts
