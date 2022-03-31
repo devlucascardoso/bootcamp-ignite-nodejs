@@ -1,10 +1,10 @@
 @Métodos de Requisições
 ->HTTP Verbs
-GET: Leitura
-POST: Criação
-PUT: Atualização
-DELETE: Deleção
-PATCH: Atualização parcial
+GET: Buscar uma informação dentro do servidor
+POST: Inserir uma informação no servidor
+PUT: Alterar uma informação no servidor
+DELETE: Deletar uma informação no servidor
+PATCH: Alterar uma informação específica
 
 ->HTTP Codes
 1XX: Informativo - a solicitação foi aceita ou o processo continua em andamento;
@@ -30,7 +30,6 @@ PATCH: Atualização parcial
 
 
 ->Parâmetros das Requisições
-
 Header Params
   authority: app.rocketseat.com.br
   method: GET
@@ -38,16 +37,16 @@ Header Params
   scheme: https
   referer: https://app.rocketseat.com.br/node
 
-Query Params
+Query Params - Paginação/Filtro
   http://enderecoservidor.com.br/v1/users?page=2&limit=50
   Chave(&)
   Valor(=)
   Serapação(?)
 
-Route Params
+Route Params - Identificar um recurso editar/deletar/buscar
   http://enderecoservidor.com.br/v1/users/{id}
 
-Body Params
+Body Params - Os objetos inserção/alteração (JSON)
   {
     "name": "Lucas Cardoso"
     "username": "cardosinho"
