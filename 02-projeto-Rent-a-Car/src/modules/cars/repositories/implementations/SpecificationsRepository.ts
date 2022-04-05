@@ -2,18 +2,18 @@ import { getRepository, Repository } from "typeorm";
 
 import { Specification } from "../../entities/Specification";
 import {
-  ISpecificationRepository,
-  ICreateSpecificationsDTO,
-} from "../ISpecificationSRepository";
+  ISpecificationsRepository,
+  ICreateSpecificationDTO,
+} from "../ISpecificationsRepository";
 
-class SpecificationsRepository implements ISpecificationRepository {
+class SpecificationsRepository implements ISpecificationsRepository {
   private repository: Repository<Specification>;
 
   constructor() {
     this.repository = getRepository(Specification);
   }
 
-  async create({ description, name }: ICreateSpecificationsDTO): Promise<void> {
+  async create({ description, name }: ICreateSpecificationDTO): Promise<void> {
     const specification = this.repository.create({
       description,
       name,
