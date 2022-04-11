@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "RentX Documentation",
+    "title": "Rent-a-Car Documentation",
     "description": "This is an API Rent",
     "version": "1.0.0",
     "contact": {
-      "email": "julio.barreto@gmail.com"
+      "email": "lucascardoso946@gmail.com"
     }
   },
   "paths": {
@@ -122,7 +122,7 @@
         }
       }
     }
-  },  
+  },
   "definitions": {
     "Specification": {
       "type": "object",
