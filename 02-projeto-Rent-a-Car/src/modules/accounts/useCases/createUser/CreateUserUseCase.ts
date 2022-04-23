@@ -1,5 +1,5 @@
-import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
+import { hash } from "bcryptjs";
 
 import { AppError } from "@shared/errors/AppError";
 import { ICreateUserDTO } from "@modules/accounts/dtos/ICreateUserDTO";
