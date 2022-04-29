@@ -2,13 +2,15 @@ import { CarsRepositoryInMemory } from "@modules/cars/repositories/in-memory/Car
 
 import { ListAvailableCarsUseCase } from "./ListAvailableCarsUseCase";
 
-let listCarsUseCase: ListAvailableCarsUseCase;
+let listAvailableCarsUseCase: ListAvailableCarsUseCase;
 let carsRepositoryInMemory: CarsRepositoryInMemory;
 
 describe("List Cars", () => {
   beforeEach(() => {
     carsRepositoryInMemory = new CarsRepositoryInMemory();
-    listCarsUseCase = new ListAvailableCarsUseCase(carsRepositoryInMemory);
+    listAvailableCarsUseCase = new ListAvailableCarsUseCase(
+      carsRepositoryInMemory
+    );
   });
 
   it("should be able to list all available cars", async () => {
@@ -22,7 +24,7 @@ describe("List Cars", () => {
       category_id: "category_id",
     });
 
-    const cars = await listCarsUseCase.execute({});
+    const cars = await listAvailableCarsUseCase.execute({});
 
     expect(cars).toEqual([car]);
   });
@@ -38,14 +40,14 @@ describe("List Cars", () => {
       category_id: "category_id",
     });
 
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       brand: "Car_brand_test",
     });
 
     expect(cars).toEqual([car]);
   });
 
-  it("should be able to list all available cars by brand", async () => {
+  it("should be able to list all available cars by name", async () => {
     const car = await carsRepositoryInMemory.create({
       name: "Car3",
       description: "Car description",
@@ -56,7 +58,7 @@ describe("List Cars", () => {
       category_id: "category_id",
     });
 
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       name: "Car3",
     });
 
@@ -65,7 +67,7 @@ describe("List Cars", () => {
 
   it("should be able to list all available cars by category", async () => {
     const car = await carsRepositoryInMemory.create({
-      name: "Car4",
+      name: "Car3",
       description: "Car description",
       daily_rate: 110.0,
       license_plate: "DEF-1235",
@@ -74,7 +76,7 @@ describe("List Cars", () => {
       category_id: "12345",
     });
 
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       category_id: "12345",
     });
 
