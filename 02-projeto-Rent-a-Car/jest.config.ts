@@ -9,5 +9,6 @@ export default {
     prefix: "<rootDir>/src/",
   }),
   preset: "ts-jest",
+  testEnvironment: "node",
   testMatch: ["**/*.spec.ts"],
 };
