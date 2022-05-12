@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { UploadCarImagesUseCase } from "./UploadCarImagesUseCase";
+import { UploadCarImagesUseCase } from "./UploadCarsImageUseCase";
 
 interface IFiles {
   filename: string;
@@ -12,13 +12,12 @@ class UploadCarImagesController {
     const { id } = request.params;
     const images = request.files as IFiles[];
 
+    const fileNames = images.map((file) => file.filename);
+
     const uploadCarImagesUseCase = container.resolve(UploadCarImagesUseCase);
-
-    const images_name = images.map((file) => file.filename);
-
     await uploadCarImagesUseCase.execute({
       car_id: id,
-      images_name,
+      images_name: fileNames,
     });
 
     return response.status(201).send();

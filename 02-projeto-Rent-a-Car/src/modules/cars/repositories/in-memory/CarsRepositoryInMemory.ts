@@ -7,57 +7,64 @@ class CarsRepositoryInMemory implements ICarsRepository {
   cars: Car[] = [];
 
   async create({
-    name,
-    description,
-    daily_rate,
-    license_plate,
-    fine_amount,
+    id,
     brand,
     category_id,
-    id,
+    daily_rate,
+    description,
+    fine_amount,
+    license_plate,
+    name,
+    specifications,
   }: ICreateCarDTO): Promise<Car> {
     const car = new Car();
-
     Object.assign(car, {
-      name,
-      description,
-      daily_rate,
-      license_plate,
-      fine_amount,
+      id,
       brand,
       category_id,
-      id,
+      daily_rate,
+      description,
+      fine_amount,
+      license_plate,
+      name,
+      specifications,
     });
-
     this.cars.push(car);
-
     return car;
+  }
+
+  async findById(id: string): Promise<Car> {
+    return this.cars.find((car) => car.id === id);
   }
 
   async findByLicensePlate(license_plate: string): Promise<Car> {
     return this.cars.find((car) => car.license_plate === license_plate);
   }
+
   async findAvailable(
     brand?: string,
     category_id?: string,
     name?: string
   ): Promise<Car[]> {
-    const all = this.cars.filter((car) => {
+    return this.cars.filter((car) => {
       if (
-        car.available === true ||
-        (brand && car.brand === brand) ||
-        (category_id && car.category_id === category_id) ||
-        (name && car.name === name)
+        car.available === true &&
+        (brand ? car.brand === brand : true) &&
+        (name ? car.name === name : true) &&
+        (category_id ? car.category_id === category_id : true)
       ) {
         return car;
       }
       return null;
     });
-    return all;
   }
 
-  async findById(id: string): Promise<Car> {
-    return this.cars.find((car) => car.id === id);
+  async updateAvailability(
+    car_id: string,
+    availability: boolean
+  ): Promise<void> {
+    const carIndex = this.cars.findIndex((car) => car.id === car_id);
+    this.cars[carIndex].available = availability;
   }
 }
 

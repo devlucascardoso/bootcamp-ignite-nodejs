@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Rent-a-Car Documentation",
-    "description": "This is an API Rent",
+    "title":"RentX Documentation",
+    "description": "This is an API Rent", 
     "version": "1.0.0",
     "contact": {
-      "email": "lucascardoso946@gmail.com"
+      "email": "iagocesar.nogueira@gmail.com"
     }
   },
   "paths": {
@@ -18,17 +18,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "type": "object", 
                 "properties": {
                   "name": {
                     "type": "string"
                   },
-                  "description": {
+                  "description":{
                     "type": "string"
                   }
                 },
-                "example": {
-                  "name": "category name sample",
+                "example":{
+                  "name": "category name sample", 
                   "description": "Category description sample"
                 }
               }
@@ -36,10 +36,12 @@
           }
         },
         "responses": {
-          "201": "Created"
-        },
-        "500": {
-          "description": "Category already exists"
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Error"
+          }
         }
       },
       "get": {
@@ -54,7 +56,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
+                    "type":"object",
                     "properties": {
                       "name": {
                         "type": "string"
@@ -75,11 +77,11 @@
       "post": {
         "tags": ["Category"],
         "summary": "Upload a new category",
-        "description": "Upload a new category",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
+        "description": "Import categories from CSV file",
+        "requestBody":{
+          "content":{
+            "multipart/form-data":{
+              "schema":{
                 "type": "object",
                 "properties": {
                   "file": {
@@ -93,7 +95,7 @@
         },
         "responses": {
           "201": {
-            "content": "Created"
+            "description": "Created"
           }
         }
       }
@@ -105,9 +107,9 @@
         "description": "Create a new specification",
         "requestBody": {
           "content": {
-            "application/json": {
+            "application/json":{
               "schema": {
-                "$ref": "#/definitions/Specification"
+                "$ref": "#/definitions/specification"
               }
             }
           }
@@ -117,20 +119,20 @@
             "description": "Created"
           },
           "500": {
-            "description": "Specification already exists!"
+            "description": "Specification already exists"
           }
         }
       }
     }
   },
   "definitions": {
-    "Specification": {
+    "specification": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
-        "description": {
+        "description":{
           "type": "string"
         }
       }

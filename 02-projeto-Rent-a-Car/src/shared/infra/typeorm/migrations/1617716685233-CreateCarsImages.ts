@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateUsers1651199395916 implements MigrationInterface {
+export class CreateCarsImages1617716685233 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "users",
+        name: "cars_image",
         columns: [
           {
             name: "id",
@@ -12,35 +12,27 @@ export class CreateUsers1651199395916 implements MigrationInterface {
             isPrimary: true,
           },
           {
-            name: "name",
-            type: "varchar",
+            name: "car_id",
+            type: "uuid",
           },
           {
-            name: "password",
+            name: "image_name",
             type: "varchar",
-          },
-          {
-            name: "email",
-            type: "varchar",
-          },
-          {
-            name: "driver_license",
-            type: "varchar",
-          },
-          {
-            name: "isAdmin",
-            type: "boolean",
-            default: false,
           },
           {
             name: "created_at",
             type: "timestamp",
             default: "now()",
           },
+        ],
+        foreignKeys: [
           {
-            name: "avatar",
-            type: "varchar",
-            isNullable: true,
+            name: "FK_Cars_Images_Car",
+            referencedTableName: "cars",
+            referencedColumnNames: ["id"],
+            columnNames: ["car_id"],
+            onDelete: "SET NULL",
+            onUpdate: "SET NULL",
           },
         ],
       })
@@ -48,6 +40,6 @@ export class CreateUsers1651199395916 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("users");
+    await queryRunner.dropTable("cars_image");
   }
 }

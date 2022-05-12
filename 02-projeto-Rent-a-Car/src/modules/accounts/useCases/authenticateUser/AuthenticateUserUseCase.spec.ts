@@ -1,14 +1,15 @@
-import { AppError } from "@shared/errors/AppError";
 import { ICreateUserDTO } from "@modules/accounts/dtos/ICreateUserDTO";
 import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersRepositoryInMemory";
-import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
-import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
+import { AppError } from "@shared/errors/appError";
 
-let authenticateUserUseCase: AuthenticateUserUseCase;
+import { CreateUserUseCase } from "../createUser/createUserUseCase";
+import { AuthenticateUserUseCase } from "./authenticateUserUseCase";
+
 let usersRepositoryInMemory: UsersRepositoryInMemory;
+let authenticateUserUseCase: AuthenticateUserUseCase;
 let createUserUseCase: CreateUserUseCase;
 
-describe("Authenticate User", () => {
+describe("Authenticate User Use Case", () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersRepositoryInMemory();
     authenticateUserUseCase = new AuthenticateUserUseCase(
@@ -17,15 +18,15 @@ describe("Authenticate User", () => {
     createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
   });
 
-  it("should be able to authenticate an user", async () => {
+  it("Should be able to authenticate a user", async () => {
     const user: ICreateUserDTO = {
-      driver_license: "000123",
-      email: "user@email.com",
+      driver_license: "00123",
+      email: "user@test.com",
+      name: "User Test",
       password: "1234",
-      name: "User test",
     };
-    await createUserUseCase.execute(user);
 
+    await createUserUseCase.execute(user);
     const result = await authenticateUserUseCase.execute({
       email: user.email,
       password: user.password,
@@ -34,29 +35,28 @@ describe("Authenticate User", () => {
     expect(result).toHaveProperty("token");
   });
 
-  it("should be able to authenticate an nonexistent user", () => {
+  it("Should not permit a nonexistent user to authenticate", () => {
     expect(async () => {
       await authenticateUserUseCase.execute({
-        email: "false@email.com",
-        password: "1234",
+        email: "false@test.com",
+        password: "secret",
       });
     }).rejects.toBeInstanceOf(AppError);
   });
 
-  it("should not be able to authenticate with incorrect password", () => {
+  it("Should not be able to authenticate a user with incorrect password", () => {
     expect(async () => {
       const user: ICreateUserDTO = {
-        driver_license: "0000",
-        email: "user@email.com",
+        driver_license: "00123",
+        email: "user@test.com",
+        name: "User Test",
         password: "1234",
-        name: "User Test Error",
       };
 
       await createUserUseCase.execute(user);
-
       await authenticateUserUseCase.execute({
-        email: "user@email.com",
-        password: "incorrectPassword",
+        email: user.email,
+        password: "incorrect",
       });
     }).rejects.toBeInstanceOf(AppError);
   });

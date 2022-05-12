@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 
-import { ICarsImagesRepository } from "@modules/cars/repositories/ICarsImagesRepository";
+import { CarsImagesRepository } from "@modules/cars/infra/typeorm/repositories/CarsImagesRepository";
 
 interface IRequest {
   car_id: string;
@@ -11,7 +11,7 @@ interface IRequest {
 class UploadCarImagesUseCase {
   constructor(
     @inject("CarsImagesRepository")
-    private carsImagesRepository: ICarsImagesRepository
+    private carsImagesRepository: CarsImagesRepository
   ) {}
 
   async execute({ car_id, images_name }: IRequest): Promise<void> {

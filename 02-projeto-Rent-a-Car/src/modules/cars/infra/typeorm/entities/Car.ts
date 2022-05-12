@@ -11,7 +11,7 @@ import {
 import { v4 as uuidV4 } from "uuid";
 
 import { Category } from "./Category";
-import { Specification } from "./Specification";
+import { Specification } from "./Specifications";
 
 @Entity("cars")
 class Car {
@@ -39,12 +39,14 @@ class Car {
   @Column()
   brand: string;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: "category_id" })
-  category: Category;
-
   @Column()
   category_id: string;
+
+  @ManyToOne(() => Category)
+  @JoinColumn({
+    name: "category_id",
+  })
+  category: Category;
 
   @ManyToMany(() => Specification)
   @JoinTable({

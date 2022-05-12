@@ -1,75 +1,118 @@
 import dayjs from "dayjs";
 
+import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersRepositoryInMemory";
+import { CarsRepositoryInMemory } from "@modules/cars/repositories/in-memory/CarsRepositoryInMemory";
 import { RentalsRepositoryInMemory } from "@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory";
-import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider";
-import { AppError } from "@shared/errors/AppError";
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayJsDateProvider";
+import { AppError } from "@shared/errors/appError";
 
 import { CreateRentalUseCase } from "./CreateRentalUseCase";
 
 let createRentalUseCase: CreateRentalUseCase;
-let rentalsRepositoryInMemory: RentalsRepositoryInMemory;
-let dayjsDateProvider: DayjsDateProvider;
+let carsRepository: CarsRepositoryInMemory;
+let usersRepository: UsersRepositoryInMemory;
+let rentalsRepository: RentalsRepositoryInMemory;
+let dateProvider: DayjsDateProvider;
 
-describe("Create Rental", () => {
-  const dayAdd24Hours = dayjs().add(1, "day").toDate();
+const mockCar = {
+  name: "Car Name",
+  description: "Description",
+  daily_rate: 100,
+  license_plate: "ABC-1234",
+  fine_amount: 60,
+  brand: "Brand",
+  category_id: "Category",
+};
 
+const mockUser = {
+  name: "Iago",
+  email: "iagocesar.sgs@gmail.com",
+  password: "1234",
+  driver_license: "123456",
+};
+
+const dayAdd24hours = dayjs().add(25, "hours").toDate();
+
+describe("Create Rental Use Case", () => {
   beforeEach(() => {
-    rentalsRepositoryInMemory = new RentalsRepositoryInMemory();
-    dayjsDateProvider = new DayjsDateProvider();
+    carsRepository = new CarsRepositoryInMemory();
+    usersRepository = new UsersRepositoryInMemory();
+    rentalsRepository = new RentalsRepositoryInMemory();
+    dateProvider = new DayjsDateProvider();
     createRentalUseCase = new CreateRentalUseCase(
-      rentalsRepositoryInMemory,
-      dayjsDateProvider
+      rentalsRepository,
+      carsRepository,
+      usersRepository,
+      dateProvider
     );
   });
 
-  it("should be able to create a new rental", async () => {
+  it("Should be able to create a new rental", async () => {
+    const user = await usersRepository.create(mockUser);
+    const car = await carsRepository.create(mockCar);
+
     const rental = await createRentalUseCase.execute({
-      user_id: "12345",
-      car_id: "121212",
-      expected_return_date: dayAdd24Hours,
+      user_id: user.id,
+      car_id: car.id,
+      expected_return_date: dayAdd24hours,
     });
+
     expect(rental).toHaveProperty("id");
-    expect(rental).toHaveProperty("start_date");
   });
 
-  it("should not be able to create a new rental if there is another open to the same user", async () => {
+  it("Should not be able to create a new rental if has another opened to the same user", async () => {
     expect(async () => {
+      const user = await usersRepository.create(mockUser);
+
+      const car1 = await carsRepository.create(mockCar);
+      mockCar.name = "another";
+      const car2 = await carsRepository.create(mockCar);
+
       await createRentalUseCase.execute({
-        user_id: "12345",
-        car_id: "121212",
-        expected_return_date: dayAdd24Hours,
+        user_id: user.id,
+        car_id: car1.id,
+        expected_return_date: dayAdd24hours,
       });
 
       await createRentalUseCase.execute({
-        user_id: "12345",
-        car_id: "121212",
-        expected_return_date: dayAdd24Hours,
+        user_id: user.id,
+        car_id: car2.id,
+        expected_return_date: dayAdd24hours,
       });
     }).rejects.toBeInstanceOf(AppError);
   });
 
-  it("should not be able to create a new rental if there is another open to the same car", async () => {
+  it("Should not be able to create a new rental if has another opened to the same car", async () => {
     expect(async () => {
+      const user1 = await usersRepository.create(mockUser);
+      mockUser.name = "another user";
+      const user2 = await usersRepository.create(mockUser);
+
+      const car = await carsRepository.create(mockCar);
+
       await createRentalUseCase.execute({
-        user_id: "123",
-        car_id: "test",
-        expected_return_date: dayAdd24Hours,
+        user_id: user1.id,
+        car_id: car.id,
+        expected_return_date: dayAdd24hours,
       });
 
       await createRentalUseCase.execute({
-        user_id: "321",
-        car_id: "test",
-        expected_return_date: dayAdd24Hours,
+        user_id: user2.id,
+        car_id: car.id,
+        expected_return_date: dayAdd24hours,
       });
     }).rejects.toBeInstanceOf(AppError);
   });
 
-  it("should not be able to create a new rental with invalid return time", async () => {
+  it("Should not be able to create a new rental with duration less then 24 hours", async () => {
     expect(async () => {
-      await createRentalUseCase.execute({
-        user_id: "123",
-        car_id: "test",
-        expected_return_date: dayjs().toDate(),
+      const user = await usersRepository.create(mockUser);
+      const car = await carsRepository.create(mockCar);
+
+      const rental = await createRentalUseCase.execute({
+        user_id: user.id,
+        car_id: car.id,
+        expected_return_date: new Date(),
       });
     }).rejects.toBeInstanceOf(AppError);
   });
