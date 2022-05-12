@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersRepositoryInMemory";
 import { CarsRepositoryInMemory } from "@modules/cars/repositories/in-memory/CarsRepositoryInMemory";
 import { RentalsRepositoryInMemory } from "@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory";
-import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayJsDateProvider";
-import { AppError } from "@shared/errors/appError";
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider";
+import { AppError } from "@shared/errors/AppError";
 
 import { CreateRentalUseCase } from "./CreateRentalUseCase";
 
@@ -114,6 +114,7 @@ describe("Create Rental Use Case", () => {
         car_id: car.id,
         expected_return_date: new Date(),
       });
+      return rental;
     }).rejects.toBeInstanceOf(AppError);
   });
 });

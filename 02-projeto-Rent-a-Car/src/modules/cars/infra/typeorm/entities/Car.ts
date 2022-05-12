@@ -11,7 +11,7 @@ import {
 import { v4 as uuidV4 } from "uuid";
 
 import { Category } from "./Category";
-import { Specification } from "./Specifications";
+import { Specification } from "./Specification";
 
 @Entity("cars")
 class Car {

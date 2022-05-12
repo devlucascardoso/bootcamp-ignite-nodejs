@@ -1,12 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
-import { AppError } from "@shared/errors/appError";
+import { AppError } from "@shared/errors/AppError";
 
 export function handlingErrors(
   err: Error,
   request: Request,
-  response: Response,
-  next: NextFunction
+  response: Response
 ): Response {
   if (err instanceof AppError) {
     return response.status(err.statusCode).json({
