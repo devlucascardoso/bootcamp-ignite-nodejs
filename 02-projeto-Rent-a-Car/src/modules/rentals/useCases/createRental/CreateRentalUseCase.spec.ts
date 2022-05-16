@@ -25,8 +25,8 @@ const mockCar = {
 };
 
 const mockUser = {
-  name: "Iago",
-  email: "iagocesar.sgs@gmail.com",
+  name: "User Test",
+  email: "usertest@email.com",
   password: "1234",
   driver_license: "123456",
 };
@@ -61,47 +61,47 @@ describe("Create Rental Use Case", () => {
   });
 
   it("Should not be able to create a new rental if has another opened to the same user", async () => {
-    expect(async () => {
-      const user = await usersRepository.create(mockUser);
+    const user = await usersRepository.create(mockUser);
 
-      const car1 = await carsRepository.create(mockCar);
-      mockCar.name = "another";
-      const car2 = await carsRepository.create(mockCar);
+    const car1 = await carsRepository.create(mockCar);
+    mockCar.name = "another";
+    const car2 = await carsRepository.create(mockCar);
 
-      await createRentalUseCase.execute({
-        user_id: user.id,
-        car_id: car1.id,
-        expected_return_date: dayAdd24hours,
-      });
+    await createRentalUseCase.execute({
+      user_id: user.id,
+      car_id: car1.id,
+      expected_return_date: dayAdd24hours,
+    });
 
-      await createRentalUseCase.execute({
+    await expect(
+      createRentalUseCase.execute({
         user_id: user.id,
         car_id: car2.id,
         expected_return_date: dayAdd24hours,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Car is not available"));
   });
 
   it("Should not be able to create a new rental if has another opened to the same car", async () => {
-    expect(async () => {
-      const user1 = await usersRepository.create(mockUser);
-      mockUser.name = "another user";
-      const user2 = await usersRepository.create(mockUser);
+    const user1 = await usersRepository.create(mockUser);
+    mockUser.name = "another user";
+    const user2 = await usersRepository.create(mockUser);
 
-      const car = await carsRepository.create(mockCar);
+    const car = await carsRepository.create(mockCar);
 
-      await createRentalUseCase.execute({
-        user_id: user1.id,
-        car_id: car.id,
-        expected_return_date: dayAdd24hours,
-      });
+    await createRentalUseCase.execute({
+      user_id: user1.id,
+      car_id: car.id,
+      expected_return_date: dayAdd24hours,
+    });
 
-      await createRentalUseCase.execute({
+    await expect(
+      createRentalUseCase.execute({
         user_id: user2.id,
         car_id: car.id,
         expected_return_date: dayAdd24hours,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Car is not available"));
   });
 
   it("Should not be able to create a new rental with duration less then 24 hours", async () => {

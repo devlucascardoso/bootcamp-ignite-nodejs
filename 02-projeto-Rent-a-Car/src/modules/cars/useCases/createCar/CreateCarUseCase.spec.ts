@@ -5,6 +5,7 @@ import { CreateCarUseCase } from "./CreateCarUseCase";
 
 let createCarUseCase: CreateCarUseCase;
 let carsRepositoryInMemory: CarsRepositoryInMemory;
+
 const mockCar = {
   name: "Car Name",
   description: "Description",
@@ -32,9 +33,9 @@ describe("Create car use case", () => {
   });
 
   it("Should not be able to create with license_plate already in use", async () => {
-    expect(async () => {
-      await createCarUseCase.execute(mockCar);
-      await createCarUseCase.execute(mockCar);
-    }).rejects.toBeInstanceOf(AppError);
+    await createCarUseCase.execute(mockCar);
+    await expect(createCarUseCase.execute(mockCar)).rejects.toEqual(
+      new AppError("Car already exists")
+    );
   });
 });

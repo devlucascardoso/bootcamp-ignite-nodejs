@@ -29,7 +29,7 @@ class CreateCarSpecificationUseCase {
       specifications_ids
     );
     if (specifications.length === 0) {
-      throw new AppError("Can not find specifications");
+      throw new AppError("Car not find specifications");
     }
 
     car.specifications = specifications;
