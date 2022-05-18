@@ -1,19 +1,27 @@
 import { ICreateUserDTO } from "@modules/accounts/dtos/ICreateUserDTO";
 import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersRepositoryInMemory";
-import { AppError } from "@shared/errors/AppError";
+import { UsersTokensRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersTokensRepositoryInMemory";
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider";
 
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
+import { AuthenticateUserError } from "./AuthenticateUserError";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
 let usersRepositoryInMemory: UsersRepositoryInMemory;
 let authenticateUserUseCase: AuthenticateUserUseCase;
 let createUserUseCase: CreateUserUseCase;
+let usersTokensRepositoryInMemory: UsersTokensRepositoryInMemory;
+let dateProvider: DayjsDateProvider;
 
 describe("Authenticate User Use Case", () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersRepositoryInMemory();
+    dateProvider = new DayjsDateProvider();
+    usersTokensRepositoryInMemory = new UsersTokensRepositoryInMemory();
     authenticateUserUseCase = new AuthenticateUserUseCase(
-      usersRepositoryInMemory
+      usersRepositoryInMemory,
+      usersTokensRepositoryInMemory,
+      dateProvider
     );
     createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
   });
@@ -33,7 +41,7 @@ describe("Authenticate User Use Case", () => {
     });
 
     expect(result).toHaveProperty("token");
-  });
+  }, 50000);
 
   it("Should not permit a nonexistent user to authenticate", async () => {
     await expect(
@@ -41,7 +49,7 @@ describe("Authenticate User Use Case", () => {
         email: "false@test.com",
         password: "secret",
       })
-    ).rejects.toEqual(new AppError("Email or password incorrect"));
+    ).rejects.toBeInstanceOf(AuthenticateUserError);
   });
 
   it("Should not be able to authenticate a user with incorrect password", async () => {
@@ -51,7 +59,6 @@ describe("Authenticate User Use Case", () => {
       name: "User Test",
       password: "1234",
     };
-
     await createUserUseCase.execute(user);
 
     await expect(
@@ -59,6 +66,6 @@ describe("Authenticate User Use Case", () => {
         email: user.email,
         password: "incorrect",
       })
-    ).rejects.toEqual(new AppError("Email or password incorrect"));
-  });
+    ).rejects.toBeInstanceOf(AuthenticateUserError);
+  }, 15000);
 });

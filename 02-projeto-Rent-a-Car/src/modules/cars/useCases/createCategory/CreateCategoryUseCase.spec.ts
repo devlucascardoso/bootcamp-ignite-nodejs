@@ -1,6 +1,6 @@
 import { CategoriesRepositoryInMemory } from "@modules/cars/repositories/in-memory/CategoriesRepositoryInMemory";
-import { AppError } from "@shared/errors/AppError";
 
+import { CreateCategoryError } from "./CreateCategoryError";
 import { CreateCategoryUseCase } from "./CreateCategoryUseCase";
 
 let categoriesRepositoryInMemory: CategoriesRepositoryInMemory;
@@ -34,8 +34,8 @@ describe("Create Category Use Case", () => {
     };
     await createCategoryUseCase.execute(newCategory);
 
-    await expect(createCategoryUseCase.execute(newCategory)).rejects.toEqual(
-      new AppError("Category already exists")
-    );
+    await expect(
+      createCategoryUseCase.execute(newCategory)
+    ).rejects.toBeInstanceOf(CreateCategoryError);
   });
 });

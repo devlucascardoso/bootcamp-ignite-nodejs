@@ -4,8 +4,8 @@ import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memor
 import { CarsRepositoryInMemory } from "@modules/cars/repositories/in-memory/CarsRepositoryInMemory";
 import { RentalsRepositoryInMemory } from "@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory";
 import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider";
-import { AppError } from "@shared/errors/AppError";
 
+import { CreateRentalError } from "./CreateRentalError";
 import { CreateRentalUseCase } from "./CreateRentalUseCase";
 
 let createRentalUseCase: CreateRentalUseCase;
@@ -25,8 +25,8 @@ const mockCar = {
 };
 
 const mockUser = {
-  name: "User Test",
-  email: "usertest@email.com",
+  name: "Iago",
+  email: "iagocesar.sgs@gmail.com",
   password: "1234",
   driver_license: "123456",
 };
@@ -79,7 +79,7 @@ describe("Create Rental Use Case", () => {
         car_id: car2.id,
         expected_return_date: dayAdd24hours,
       })
-    ).rejects.toEqual(new AppError("Car is not available"));
+    ).rejects.toBeInstanceOf(CreateRentalError.UserWithRentalInProgress);
   });
 
   it("Should not be able to create a new rental if has another opened to the same car", async () => {
@@ -101,20 +101,19 @@ describe("Create Rental Use Case", () => {
         car_id: car.id,
         expected_return_date: dayAdd24hours,
       })
-    ).rejects.toEqual(new AppError("Car is not available"));
+    ).rejects.toBeInstanceOf(CreateRentalError.CarNotAvailable);
   });
 
   it("Should not be able to create a new rental with duration less then 24 hours", async () => {
-    expect(async () => {
-      const user = await usersRepository.create(mockUser);
-      const car = await carsRepository.create(mockCar);
+    const user = await usersRepository.create(mockUser);
+    const car = await carsRepository.create(mockCar);
 
-      const rental = await createRentalUseCase.execute({
+    await expect(
+      createRentalUseCase.execute({
         user_id: user.id,
         car_id: car.id,
         expected_return_date: new Date(),
-      });
-      return rental;
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toBeInstanceOf(CreateRentalError.DurationLessThenMinimum);
   });
 });

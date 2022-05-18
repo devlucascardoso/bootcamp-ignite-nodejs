@@ -6,6 +6,10 @@ import { IUsersRepository } from "../IUsersRepository";
 class UsersRepositoryInMemory implements IUsersRepository {
   users: User[] = [];
 
+  async getAll(): Promise<User[]> {
+    return this.users;
+  }
+
   async create({
     driver_license,
     email,
