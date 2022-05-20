@@ -49,8 +49,7 @@ class RefreshTokenUseCase {
     });
 
     const expires_date = this.dateProvider.addDays(
-      auth.expires_refresh_token_days,
-      null
+      auth.expires_refresh_token_days
     );
 
     await this.usersTokensRepository.create({
