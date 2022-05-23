@@ -8,6 +8,8 @@ import createConnection from "@shared/infra/typeorm";
 
 let connection: Connection;
 
+const jestTimeoutInMS = 50 * 1000;
+
 describe("List Category Controller", () => {
   beforeAll(async () => {
     connection = await createConnection();
@@ -25,33 +27,37 @@ describe("List Category Controller", () => {
         true, 'license-admin', 'now()'
       )
     `);
-  });
+  }, jestTimeoutInMS);
 
   afterAll(async () => {
     await connection.dropDatabase();
     await connection.close();
   });
 
-  it("Should be able to list all Categories", async () => {
-    const responseToken = await request(app).post("/sessions").send({
-      email: "admin@rentx.com.br",
-      password: "admin",
-    });
-    const { token } = responseToken.body;
-    await request(app)
-      .post("/categories")
-      .send({
-        name: "Category Supertest",
-        description: "Category Supertest",
-      })
-      .set({
-        Authorization: `Bearer ${token}`,
+  it(
+    "Should be able to list all Categories",
+    async () => {
+      const responseToken = await request(app).post("/sessions").send({
+        email: "admin@rentx.com.br",
+        password: "admin",
       });
+      const { token } = responseToken.body;
+      await request(app)
+        .post("/categories")
+        .send({
+          name: "Category Supertest",
+          description: "Category Supertest",
+        })
+        .set({
+          Authorization: `Bearer ${token}`,
+        });
 
-    const response = await request(app).get("/categories");
+      const response = await request(app).get("/categories");
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveLength(1);
-    expect(response.body[0]).toHaveProperty("id");
-  });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveLength(1);
+      expect(response.body[0]).toHaveProperty("id");
+    },
+    jestTimeoutInMS
+  );
 });

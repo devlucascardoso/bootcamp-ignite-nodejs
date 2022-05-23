@@ -25,8 +25,8 @@ const mockCar = {
 };
 
 const mockUser = {
-  name: "Iago",
-  email: "iagocesar.sgs@gmail.com",
+  name: "User test",
+  email: "usertest@email.com",
   password: "1234",
   driver_license: "123456",
 };

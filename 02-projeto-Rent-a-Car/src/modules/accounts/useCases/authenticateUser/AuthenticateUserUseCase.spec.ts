@@ -13,6 +13,8 @@ let createUserUseCase: CreateUserUseCase;
 let usersTokensRepositoryInMemory: UsersTokensRepositoryInMemory;
 let dateProvider: DayjsDateProvider;
 
+const jestTimeoutInMS = 50 * 1000;
+
 describe("Authenticate User Use Case", () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersRepositoryInMemory();
@@ -26,22 +28,26 @@ describe("Authenticate User Use Case", () => {
     createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
   });
 
-  it("Should be able to authenticate a user", async () => {
-    const user: ICreateUserDTO = {
-      driver_license: "00123",
-      email: "user@test.com",
-      name: "User Test",
-      password: "1234",
-    };
+  it(
+    "Should be able to authenticate a user",
+    async () => {
+      const user: ICreateUserDTO = {
+        driver_license: "00123",
+        email: "user@test.com",
+        name: "User Test",
+        password: "1234",
+      };
 
-    await createUserUseCase.execute(user);
-    const result = await authenticateUserUseCase.execute({
-      email: user.email,
-      password: user.password,
-    });
+      await createUserUseCase.execute(user);
+      const result = await authenticateUserUseCase.execute({
+        email: user.email,
+        password: user.password,
+      });
 
-    expect(result).toHaveProperty("token");
-  }, 50000);
+      expect(result).toHaveProperty("token");
+    },
+    jestTimeoutInMS
+  );
 
   it("Should not permit a nonexistent user to authenticate", async () => {
     await expect(
@@ -52,20 +58,24 @@ describe("Authenticate User Use Case", () => {
     ).rejects.toBeInstanceOf(AuthenticateUserError);
   });
 
-  it("Should not be able to authenticate a user with incorrect password", async () => {
-    const user: ICreateUserDTO = {
-      driver_license: "00123",
-      email: "user@test.com",
-      name: "User Test",
-      password: "1234",
-    };
-    await createUserUseCase.execute(user);
+  it(
+    "Should not be able to authenticate a user with incorrect password",
+    async () => {
+      const user: ICreateUserDTO = {
+        driver_license: "00123",
+        email: "user@test.com",
+        name: "User Test",
+        password: "1234",
+      };
+      await createUserUseCase.execute(user);
 
-    await expect(
-      authenticateUserUseCase.execute({
-        email: user.email,
-        password: "incorrect",
-      })
-    ).rejects.toBeInstanceOf(AuthenticateUserError);
-  }, 15000);
+      await expect(
+        authenticateUserUseCase.execute({
+          email: user.email,
+          password: "incorrect",
+        })
+      ).rejects.toBeInstanceOf(AuthenticateUserError);
+    },
+    jestTimeoutInMS
+  );
 });
