@@ -12,7 +12,7 @@ interface IPayload {
   email: string;
 }
 
-interface IResponse {
+interface ITokenResponse {
   token: string;
   refresh_token: string;
 }
@@ -27,7 +27,7 @@ class RefreshTokenUseCase {
     private dateProvider: IDateProvider
   ) {}
 
-  async execute(token: string): Promise<IResponse> {
+  async execute(token: string): Promise<ITokenResponse> {
     const { email, sub: user_id } = verify(
       token,
       auth.secret_refresh_token

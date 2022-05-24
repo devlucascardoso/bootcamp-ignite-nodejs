@@ -14,6 +14,7 @@ export async function ensureAuthenticated(
   next: NextFunction
 ): Promise<void> {
   const authHeader = request.headers.authorization;
+
   if (!authHeader) {
     throw new EnsureAuthenticatedError.TokenMissing();
   }
@@ -25,6 +26,7 @@ export async function ensureAuthenticated(
     request.user = {
       id: user_id,
     };
+
     next();
   } catch (error) {
     throw new EnsureAuthenticatedError.InvalidToken();
